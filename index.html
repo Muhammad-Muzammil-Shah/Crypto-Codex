@@ -61,6 +61,10 @@
                                 <textarea class="form-control output-area" id="caesarOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="caesarSpace" class="form-label">Replace spaces with</label>
+                            <input type="text" id="caesarSpace" maxlength="2" class="form-control w-25" placeholder="(default: space)">
+                        </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary" onclick="caesar('encode')"><i class="bi bi-arrow-right-circle"></i> Encode</button>
                             <button class="btn btn-secondary" onclick="caesar('decode')"><i class="bi bi-arrow-left-circle"></i> Decode</button>
@@ -85,6 +89,10 @@
                                 <textarea class="form-control output-area" id="hexOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="hexSpace" class="form-label">Replace spaces with</label>
+                            <input type="text" id="hexSpace" maxlength="2" class="form-control w-25" placeholder="(default: space)">
+                        </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary" onclick="asciiHex('encode')"><i class="bi bi-arrow-right-circle"></i> Encode to Hex</button>
                             <button class="btn btn-secondary" onclick="asciiHex('decode')"><i class="bi bi-arrow-left-circle"></i> Decode from Hex</button>
@@ -108,6 +116,10 @@
                                 <label>Output</label>
                                 <textarea class="form-control output-area" id="decOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="decSpace" class="form-label">Replace spaces with</label>
+                            <input type="text" id="decSpace" maxlength="2" class="form-control w-25" placeholder="(default: space)">
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary" onclick="asciiDec('encode')"><i class="bi bi-arrow-right-circle"></i> Encode to Dec</button>
@@ -141,7 +153,10 @@
             let text = document.getElementById('caesarInput').value;
             let shift = parseInt(document.getElementById('shift').value) || 0;
             let decode = (action === 'decode');
-            document.getElementById('caesarOutput').value = caesarCipher(text, shift, decode);
+            let result = caesarCipher(text, shift, decode);
+            let spaceChar = document.getElementById('caesarSpace').value;
+            if (spaceChar) result = result.replace(/ /g, spaceChar);
+            document.getElementById('caesarOutput').value = result;
         }
         // ASCII <-> Hex JS
         function asciiToHex(text) {
@@ -158,6 +173,8 @@
         function asciiHex(action) {
             let text = document.getElementById('hexInput').value;
             let result = (action === 'encode') ? asciiToHex(text) : hexToAscii(text);
+            let spaceChar = document.getElementById('hexSpace').value;
+            if (spaceChar) result = result.replace(/ /g, spaceChar);
             document.getElementById('hexOutput').value = result;
         }
         // ASCII <-> Dec JS
@@ -170,6 +187,8 @@
         function asciiDec(action) {
             let text = document.getElementById('decInput').value;
             let result = (action === 'encode') ? asciiToDec(text) : decToAscii(text);
+            let spaceChar = document.getElementById('decSpace').value;
+            if (spaceChar) result = result.replace(/ /g, spaceChar);
             document.getElementById('decOutput').value = result;
         }
         // Clear fields
@@ -177,12 +196,15 @@
             if (tool === 'caesar') {
                 document.getElementById('caesarInput').value = '';
                 document.getElementById('caesarOutput').value = '';
+                document.getElementById('caesarSpace').value = '';
             } else if (tool === 'hex') {
                 document.getElementById('hexInput').value = '';
                 document.getElementById('hexOutput').value = '';
+                document.getElementById('hexSpace').value = '';
             } else if (tool === 'dec') {
                 document.getElementById('decInput').value = '';
                 document.getElementById('decOutput').value = '';
+                document.getElementById('decSpace').value = '';
             }
         }
     </script>
