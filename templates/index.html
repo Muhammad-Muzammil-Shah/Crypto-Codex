@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Codex</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-dark text-light">
+    <div class="container py-5">
+        <div class="text-center mb-4">
+            <span class="fs-2 fw-bold text-primary">Crypto Codex</span>
+            <div class="mt-2 text-secondary">An educational tool for basic encoding and decoding methods.</div>
+        </div>
+        <ul class="nav nav-tabs mb-4 justify-content-center" id="toolTabs">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#caesar"><i class="bi bi-shield-lock"></i> Caesar Cipher</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#asciihex"><i class="bi bi-code"></i> ASCII &lt;&gt; Hex</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#asciidec"><i class="bi bi-123"></i> ASCII &lt;&gt; Dec</a></li>
+        </ul>
+        <div class="tab-content">
+            <!-- Caesar Cipher Tab -->
+            <div class="tab-pane fade show active" id="caesar">
+                <div class="card bg-card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-shield-lock"></i> Caesar Cipher</h5>
+                        <p class="card-text">The Caesar cipher is a simple substitution cipher where each letter is shifted by a certain number of places down the alphabet.</p>
+                        <div class="mb-3">
+                            <label for="shift" class="form-label">Shift Value</label>
+                            <input type="number" class="form-control w-25" id="shift" value="3">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Input</label>
+                                <textarea class="form-control input-area" id="caesarInput" rows="3" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="col">
+                                <label>Output</label>
+                                <textarea class="form-control output-area" id="caesarOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="caesar('encode')"><i class="bi bi-arrow-right-circle"></i> Encode</button>
+                            <button class="btn btn-secondary" onclick="caesar('decode')"><i class="bi bi-arrow-left-circle"></i> Decode</button>
+                            <button class="btn btn-outline-light" onclick="clearFields('caesar')"><i class="bi bi-x-circle"></i> Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ASCII <-> Hex Tab -->
+            <div class="tab-pane fade" id="asciihex">
+                <div class="card bg-card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-code"></i> ASCII &lt;&gt; Hex</h5>
+                        <p class="card-text">ASCII to Hexadecimal encoding converts each character of a text into its two-digit hexadecimal representation based on the ASCII standard.</p>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Input</label>
+                                <textarea class="form-control input-area" id="hexInput" rows="3" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="col">
+                                <label>Output</label>
+                                <textarea class="form-control output-area" id="hexOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="asciiHex('encode')"><i class="bi bi-arrow-right-circle"></i> Encode to Hex</button>
+                            <button class="btn btn-secondary" onclick="asciiHex('decode')"><i class="bi bi-arrow-left-circle"></i> Decode from Hex</button>
+                            <button class="btn btn-outline-light" onclick="clearFields('hex')"><i class="bi bi-x-circle"></i> Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ASCII <-> Dec Tab -->
+            <div class="tab-pane fade" id="asciidec">
+                <div class="card bg-card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-123"></i> ASCII &lt;&gt; Dec</h5>
+                        <p class="card-text">ASCII to Decimal encoding converts each character of a text into its decimal representation based on the ASCII standard.</p>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Input</label>
+                                <textarea class="form-control input-area" id="decInput" rows="3" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="col">
+                                <label>Output</label>
+                                <textarea class="form-control output-area" id="decOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="asciiDec('encode')"><i class="bi bi-arrow-right-circle"></i> Encode to Dec</button>
+                            <button class="btn btn-secondary" onclick="asciiDec('decode')"><i class="bi bi-arrow-left-circle"></i> Decode from Dec</button>
+                            <button class="btn btn-outline-light" onclick="clearFields('dec')"><i class="bi bi-x-circle"></i> Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap & Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function caesar(action) {
+            fetch('/caesar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    text: document.getElementById('caesarInput').value,
+                    shift: document.getElementById('shift').value,
+                    action: action
+                })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById('caesarOutput').value = data.result);
+        }
+        function asciiHex(action) {
+            fetch('/ascii_hex', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    text: document.getElementById('hexInput').value,
+                    action: action
+                })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById('hexOutput').value = data.result);
+        }
+        function asciiDec(action) {
+            fetch('/ascii_dec', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    text: document.getElementById('decInput').value,
+                    action: action
+                })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById('decOutput').value = data.result);
+        }
+        function clearFields(tool) {
+            if (tool === 'caesar') {
+                document.getElementById('caesarInput').value = '';
+                document.getElementById('caesarOutput').value = '';
+            } else if (tool === 'hex') {
+                document.getElementById('hexInput').value = '';
+                document.getElementById('hexOutput').value = '';
+            } else if (tool === 'dec') {
+                document.getElementById('decInput').value = '';
+                document.getElementById('decOutput').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
