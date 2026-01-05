@@ -6,6 +6,9 @@
     <title>Crypto Codex</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
     <style>
         body { background: #f8fafc; color: #222; }
         .bg-card { background: linear-gradient(135deg, #fff 80%, #e9ecef 100%); border-radius: 1rem; border: none; }
@@ -39,6 +42,8 @@
             <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#caesar"><i class="bi bi-shield-lock"></i> Caesar Cipher</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#asciihex"><i class="bi bi-code"></i> ASCII &lt;&gt; Hex</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#asciidec"><i class="bi bi-123"></i> ASCII &lt;&gt; Dec</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#hillcipher"><i class="bi bi-grid-3x3"></i> Hill Cipher 2x2</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#documentation"><i class="bi bi-book"></i> Documentation</a></li>
         </ul>
         <div class="tab-content">
             <!-- Caesar Cipher Tab -->
@@ -129,6 +134,282 @@
                     </div>
                 </div>
             </div>
+            <!-- Hill Cipher 2x2 Tab -->
+            <div class="tab-pane fade" id="hillcipher">
+                <div class="card bg-card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-grid-3x3"></i> Hill Cipher 2x2</h5>
+                        <p class="card-text">Hill Cipher uses matrix multiplication for encryption. Enter a 2x2 key matrix (values 0-25). The determinant must be coprime with 26.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Key Matrix (2x2)</label>
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex gap-2">
+                                        <input type="number" class="form-control" id="hillA" style="width:70px" placeholder="a" value="3">
+                                        <input type="number" class="form-control" id="hillB" style="width:70px" placeholder="b" value="3">
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <input type="number" class="form-control" id="hillC" style="width:70px" placeholder="c" value="2">
+                                        <input type="number" class="form-control" id="hillD" style="width:70px" placeholder="d" value="5">
+                                    </div>
+                                </div>
+                                <span class="text-muted ms-3" id="hillMatrixInfo"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Input (A-Z only)</label>
+                                <textarea class="form-control input-area" id="hillInput" rows="3" placeholder="Type your message here (letters only)..."></textarea>
+                            </div>
+                            <div class="col">
+                                <label>Output</label>
+                                <textarea class="form-control output-area" id="hillOutput" rows="3" readonly placeholder="Result will appear here..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="hillCipher('encrypt')"><i class="bi bi-lock"></i> Encrypt</button>
+                            <button class="btn btn-secondary" onclick="hillCipher('decrypt')"><i class="bi bi-unlock"></i> Decrypt</button>
+                            <button class="btn btn-outline-light" onclick="clearFields('hill')"><i class="bi bi-x-circle"></i> Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Documentation Tab -->
+            <div class="tab-pane fade" id="documentation">
+                <div class="card bg-card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-book"></i> Backend Documentation</h5>
+                        <p class="card-text">Here you will find the backend explanation for each cipher - including formulas and code logic.</p>
+                        
+                        <div class="accordion" id="docsAccordion">
+                            <!-- Caesar Cipher Docs -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#docCaesar">
+                                        <i class="bi bi-shield-lock me-2"></i> Caesar Cipher
+                                    </button>
+                                </h2>
+                                <div id="docCaesar" class="accordion-collapse collapse show" data-bs-parent="#docsAccordion">
+                                    <div class="accordion-body">
+                                        <h6><strong>📐 Formula:</strong></h6>
+                                        <div class="bg-light p-3 rounded mb-3">
+                                            <p><strong>Encryption:</strong></p>
+                                            <p class="text-center fs-5">$$C = (P + K) \mod 26$$</p>
+                                            <p><strong>Decryption:</strong></p>
+                                            <p class="text-center fs-5">$$P = (C - K + 26) \mod 26$$</p>
+                                            <hr>
+                                            <p><strong>Where:</strong></p>
+                                            <ul>
+                                                <li>$P$ = Plaintext letter position (A=0, B=1, ... Z=25)</li>
+                                                <li>$C$ = Ciphertext letter position</li>
+                                                <li>$K$ = Shift value (key)</li>
+                                            </ul>
+                                        </div>
+                                        <h6><strong>💻 Backend Code:</strong></h6>
+                                        <pre class="bg-dark text-light p-3 rounded"><code>function caesarCipher(text, shift, decode) {
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        let char = text[i];
+        if (/[a-zA-Z]/.test(char)) {
+            let base = char === char.toUpperCase() ? 65 : 97;
+            let offset = decode ? -shift : shift;
+            let code = ((char.charCodeAt(0) - base + offset + 26) % 26) + base;
+            result += String.fromCharCode(code);
+        } else {
+            result += char;
+        }
+    }
+    return result;
+}</code></pre>
+                                        <h6><strong>📝 Example:</strong></h6>
+                                        <p>Input: "HELLO", Shift: 3<br>
+                                        H(7) → K(10), E(4) → H(7), L(11) → O(14), L(11) → O(14), O(14) → R(17)<br>
+                                        Output: "KHOOR"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ASCII Hex Docs -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#docHex">
+                                        <i class="bi bi-code me-2"></i> ASCII &lt;&gt; Hex
+                                    </button>
+                                </h2>
+                                <div id="docHex" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                                    <div class="accordion-body">
+                                        <h6><strong>📐 Formula:</strong></h6>
+                                        <div class="bg-light p-3 rounded mb-3">
+                                            <p><strong>ASCII to Hexadecimal:</strong></p>
+                                            <p class="text-center fs-5">$$\text{Character} \xrightarrow{\text{ASCII}} \text{Decimal} \xrightarrow{\text{Base 16}} \text{Hex}$$</p>
+                                            <p><strong>Hexadecimal to ASCII:</strong></p>
+                                            <p class="text-center fs-5">$$\text{Hex} \xrightarrow{\text{Base 10}} \text{Decimal} \xrightarrow{\text{chr()}} \text{Character}$$</p>
+                                            <hr>
+                                            <p><strong>Hexadecimal System (Base 16):</strong></p>
+                                            <p class="text-center">$0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A_{(10)}, B_{(11)}, C_{(12)}, D_{(13)}, E_{(14)}, F_{(15)}$</p>
+                                        </div>
+                                        <h6><strong>💻 Backend Code:</strong></h6>
+                                        <pre class="bg-dark text-light p-3 rounded"><code>// ASCII to Hex
+function asciiToHex(text) {
+    return Array.from(text)
+        .map(c => c.charCodeAt(0).toString(16).padStart(2, '0'))
+        .join(' ');
+}
+
+// Hex to ASCII
+function hexToAscii(hexStr) {
+    let clean = hexStr.replace(/\s+/g, '');
+    let out = '';
+    for (let i = 0; i < clean.length; i += 2) {
+        out += String.fromCharCode(parseInt(clean.substr(i, 2), 16));
+    }
+    return out;
+}</code></pre>
+                                        <h6><strong>📝 Example:</strong></h6>
+                                        <p>Input: "Hi"<br>
+                                        H = ASCII 72 = Hex 48<br>
+                                        i = ASCII 105 = Hex 69<br>
+                                        Output: "48 69"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ASCII Dec Docs -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#docDec">
+                                        <i class="bi bi-123 me-2"></i> ASCII &lt;&gt; Dec
+                                    </button>
+                                </h2>
+                                <div id="docDec" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                                    <div class="accordion-body">
+                                        <h6><strong>📐 Formula:</strong></h6>
+                                        <div class="bg-light p-3 rounded mb-3">
+                                            <p><strong>ASCII to Decimal:</strong></p>
+                                            <p class="text-center fs-5">$$\text{Character} \xrightarrow{\text{charCodeAt()}} \text{ASCII Code (0-127)}$$</p>
+                                            <p><strong>Decimal to ASCII:</strong></p>
+                                            <p class="text-center fs-5">$$\text{Number} \xrightarrow{\text{fromCharCode()}} \text{Character}$$</p>
+                                            <hr>
+                                            <p><strong>ASCII Table Reference:</strong></p>
+                                            <table class="table table-sm table-bordered text-center">
+                                                <tr><th>Character</th><th>A</th><th>Z</th><th>a</th><th>z</th><th>0</th><th>9</th><th>Space</th></tr>
+                                                <tr><th>ASCII Code</th><td>65</td><td>90</td><td>97</td><td>122</td><td>48</td><td>57</td><td>32</td></tr>
+                                            </table>
+                                        </div>
+                                        <h6><strong>💻 Backend Code:</strong></h6>
+                                        <pre class="bg-dark text-light p-3 rounded"><code>// ASCII to Decimal
+function asciiToDec(text) {
+    return Array.from(text)
+        .map(c => c.charCodeAt(0))
+        .join(' ');
+}
+
+// Decimal to ASCII
+function decToAscii(decStr) {
+    return decStr.split(/\s+/)
+        .map(num => String.fromCharCode(parseInt(num, 10)))
+        .join('');
+}</code></pre>
+                                        <h6><strong>📝 Example:</strong></h6>
+                                        <p>Input: "ABC"<br>
+                                        A = 65, B = 66, C = 67<br>
+                                        Output: "65 66 67"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hill Cipher Docs -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#docHill">
+                                        <i class="bi bi-grid-3x3 me-2"></i> Hill Cipher 2x2
+                                    </button>
+                                </h2>
+                                <div id="docHill" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                                    <div class="accordion-body">
+                                        <h6><strong>📐 Formula:</strong></h6>
+                                        <div class="bg-light p-3 rounded mb-3">
+                                            <p><strong>Key Matrix (2×2):</strong></p>
+                                            <p class="text-center fs-5">$$K = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$$</p>
+                                            
+                                            <p><strong>Encryption:</strong></p>
+                                            <p class="text-center fs-5">$$\begin{pmatrix} C_1 \\ C_2 \end{pmatrix} = \begin{pmatrix} a & b \\ c & d \end{pmatrix} \times \begin{pmatrix} P_1 \\ P_2 \end{pmatrix} \mod 26$$</p>
+                                            <p class="text-center">$C_1 = (a \times P_1 + b \times P_2) \mod 26$</p>
+                                            <p class="text-center">$C_2 = (c \times P_1 + d \times P_2) \mod 26$</p>
+                                            
+                                            <hr>
+                                            <p><strong>Decryption:</strong></p>
+                                            <p>Step 1: Calculate Determinant</p>
+                                            <p class="text-center fs-5">$$\det(K) = (a \times d - b \times c) \mod 26$$</p>
+                                            
+                                            <p>Step 2: Find Modular Inverse of Determinant</p>
+                                            <p class="text-center fs-5">$$\det^{-1} \times \det \equiv 1 \pmod{26}$$</p>
+                                            
+                                            <p>Step 3: Calculate Inverse Matrix</p>
+                                            <p class="text-center fs-5">$$K^{-1} = \det^{-1} \times \begin{pmatrix} d & -b \\ -c & a \end{pmatrix} \mod 26$$</p>
+                                            
+                                            <p>Step 4: Decrypt</p>
+                                            <p class="text-center fs-5">$$\begin{pmatrix} P_1 \\ P_2 \end{pmatrix} = K^{-1} \times \begin{pmatrix} C_1 \\ C_2 \end{pmatrix} \mod 26$$</p>
+                                        </div>
+                                        <h6><strong>💻 Backend Code:</strong></h6>
+                                        <pre class="bg-dark text-light p-3 rounded"><code>// Modular arithmetic
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
+// Modular inverse
+function modInverse(a, m) {
+    a = mod(a, m);
+    for (let x = 1; x < m; x++) {
+        if ((a * x) % m === 1) return x;
+    }
+    return -1; // No inverse
+}
+
+// Determinant
+function hillDeterminant(matrix) {
+    return mod(matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0], 26);
+}
+
+// Inverse Matrix
+function hillInverseMatrix(matrix) {
+    let det = hillDeterminant(matrix);
+    let detInv = modInverse(det, 26);
+    if (detInv === -1) return null;
+    
+    let adj = [
+        [mod(matrix[1][1], 26), mod(-matrix[0][1], 26)],
+        [mod(-matrix[1][0], 26), mod(matrix[0][0], 26)]
+    ];
+    return [
+        [mod(adj[0][0] * detInv, 26), mod(adj[0][1] * detInv, 26)],
+        [mod(adj[1][0] * detInv, 26), mod(adj[1][1] * detInv, 26)]
+    ];
+}
+
+// Matrix × Vector
+function hillMultiply(matrix, vec) {
+    return [
+        mod(matrix[0][0] * vec[0] + matrix[0][1] * vec[1], 26),
+        mod(matrix[1][0] * vec[0] + matrix[1][1] * vec[1], 26)
+    ];
+}</code></pre>
+                                        <h6><strong>📝 Example:</strong></h6>
+                                        <p>Matrix: [[3,3],[2,5]], Input: "HI"<br>
+                                        H=7, I=8<br>
+                                        C₁ = (3×7 + 3×8) mod 26 = 45 mod 26 = 19 = T<br>
+                                        C₂ = (2×7 + 5×8) mod 26 = 54 mod 26 = 2 = C<br>
+                                        Output: "TC"</p>
+                                        <h6><strong>⚠️ Important:</strong></h6>
+                                        <p>The determinant must be coprime with 26 (valid values: 1,3,5,7,9,11,15,17,19,21,23,25).<br>
+                                        If the determinant is even or a multiple of 13, the matrix will not be invertible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -191,6 +472,90 @@
             if (spaceChar) result = result.replace(/ /g, spaceChar);
             document.getElementById('decOutput').value = result;
         }
+        // Hill Cipher 2x2 JS
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+        function modInverse(a, m) {
+            a = mod(a, m);
+            for (let x = 1; x < m; x++) {
+                if ((a * x) % m === 1) return x;
+            }
+            return -1; // No inverse
+        }
+        function getHillMatrix() {
+            let a = parseInt(document.getElementById('hillA').value) || 0;
+            let b = parseInt(document.getElementById('hillB').value) || 0;
+            let c = parseInt(document.getElementById('hillC').value) || 0;
+            let d = parseInt(document.getElementById('hillD').value) || 0;
+            return [[mod(a, 26), mod(b, 26)], [mod(c, 26), mod(d, 26)]];
+        }
+        function hillDeterminant(matrix) {
+            return mod(matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0], 26);
+        }
+        function hillInverseMatrix(matrix) {
+            let det = hillDeterminant(matrix);
+            let detInv = modInverse(det, 26);
+            if (detInv === -1) return null;
+            // Adjugate matrix for 2x2: [[d, -b], [-c, a]]
+            let adj = [
+                [mod(matrix[1][1], 26), mod(-matrix[0][1], 26)],
+                [mod(-matrix[1][0], 26), mod(matrix[0][0], 26)]
+            ];
+            // Multiply by detInv
+            return [
+                [mod(adj[0][0] * detInv, 26), mod(adj[0][1] * detInv, 26)],
+                [mod(adj[1][0] * detInv, 26), mod(adj[1][1] * detInv, 26)]
+            ];
+        }
+        function hillMultiply(matrix, vec) {
+            return [
+                mod(matrix[0][0] * vec[0] + matrix[0][1] * vec[1], 26),
+                mod(matrix[1][0] * vec[0] + matrix[1][1] * vec[1], 26)
+            ];
+        }
+        function hillCipher(action) {
+            let originalText = document.getElementById('hillInput').value.toUpperCase();
+            let lettersOnly = originalText.replace(/[^A-Z]/g, '');
+            if (lettersOnly.length % 2 !== 0) lettersOnly += 'X'; // Padding
+            let matrix = getHillMatrix();
+            let det = hillDeterminant(matrix);
+            let detInv = modInverse(det, 26);
+            if (detInv === -1) {
+                document.getElementById('hillOutput').value = 'Error: Matrix is not invertible (det=' + det + '). Determinant must be coprime with 26.';
+                return;
+            }
+            let useMatrix = matrix;
+            if (action === 'decrypt') {
+                useMatrix = hillInverseMatrix(matrix);
+                if (!useMatrix) {
+                    document.getElementById('hillOutput').value = 'Error: Cannot compute inverse matrix.';
+                    return;
+                }
+            }
+            // Process letters only
+            let processedLetters = '';
+            for (let i = 0; i < lettersOnly.length; i += 2) {
+                let vec = [lettersOnly.charCodeAt(i) - 65, lettersOnly.charCodeAt(i + 1) - 65];
+                let res = hillMultiply(useMatrix, vec);
+                processedLetters += String.fromCharCode(res[0] + 65) + String.fromCharCode(res[1] + 65);
+            }
+            // Rebuild result with spaces preserved
+            let result = '';
+            let letterIndex = 0;
+            for (let i = 0; i < originalText.length; i++) {
+                if (/[A-Z]/.test(originalText[i])) {
+                    result += processedLetters[letterIndex++];
+                } else {
+                    result += originalText[i]; // Keep spaces and other chars
+                }
+            }
+            // Add any remaining processed letters (from padding)
+            while (letterIndex < processedLetters.length) {
+                result += processedLetters[letterIndex++];
+            }
+            document.getElementById('hillOutput').value = result;
+        }
         // Clear fields
         function clearFields(tool) {
             if (tool === 'caesar') {
@@ -205,6 +570,13 @@
                 document.getElementById('decInput').value = '';
                 document.getElementById('decOutput').value = '';
                 document.getElementById('decSpace').value = '';
+            } else if (tool === 'hill') {
+                document.getElementById('hillInput').value = '';
+                document.getElementById('hillOutput').value = '';
+                document.getElementById('hillA').value = '3';
+                document.getElementById('hillB').value = '3';
+                document.getElementById('hillC').value = '2';
+                document.getElementById('hillD').value = '5';
             }
         }
     </script>
